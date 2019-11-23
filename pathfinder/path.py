@@ -7,8 +7,6 @@ import time
 
 from settings import *
 
-# Variables
-
 open = []
 closed = []
 
@@ -65,6 +63,7 @@ class Grid:
 
     def get_block(self, pos):
         return self.grid[pos[0]][pos[1]]
+
 
 class Block:
     def __init__(self, col, row, obstacle=False, start_distance=-1, rating=-1):
@@ -155,6 +154,11 @@ if start[0]>cols-1 or start[1]>rows-1 or end[0]>cols-1 or end[1]>rows-1:
 if start == end:
     print("Distance is equal to 0")
     exit()
+
+
+############################################# MAIN ########################################
+
+
 pygame.init()
 clock = pygame.time.Clock()
 pygame.display.set_caption("Pathfinder")
@@ -163,9 +167,6 @@ grid = Grid(screen, width, height, rows, cols, start, end)
 grid.draw()
 mark_ends(start, end)
 done = False
-
-
-############################################# MAIN LOOP ########################################
 
 
 while not done:
