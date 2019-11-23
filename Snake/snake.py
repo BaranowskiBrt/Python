@@ -16,11 +16,9 @@ block_width = width//cols
 direction = "RIGHT"
 grid = []
 positions = []
-for i in range(cols):
-    for j in range(rows):
-        positions.append((i*block_width, j*block_height))
+
 class Grid:
-    def __init__(self, height, width, cols, rows):
+    def __init__(self, height, width, ctockols, rows):
         self.height = height
         self.width = width
         self.cols = cols
@@ -61,98 +59,104 @@ def message():
     master = tk.Tk()
     master.withdraw()
     messagebox.showinfo("Game Over", "Length of your snake: {}".format(len(snake_position)))
-pygame.init()
-clock = pygame.time.Clock()
-pygame.display.set_caption("Snake")
-screen = pygame.display.set_mode((height, width))
-grid = Grid(height, width, cols, rows)
-grid.draw_grid()
-snake_position.append(random.choice(positions))
-display_snake(snake_position[0])
-display_snack()
-choice = direction
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                if direction != "DOWN":
-                    choice = "UP"
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                if direction != "UP":
-                    choice = "DOWN"
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                if direction != "LEFT":
-                    choice = "RIGHT"
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                if direction != "RIGHT":
-                    choice = "LEFT"
-    if timer%20 == 0:
-        direction = choice
-        timer = 0
-        if direction == "UP":
-            for pos in snake_position:
-                if (snake_position[0][0], snake_position[0][1]-block_height) == pos:
-                    message()
-                    exit()
-            if (snake_position[0][0], snake_position[0][1]-block_height) == snack_position:
-                snake_position.insert(0, snack_position)
-                display_snack()
-                continue
-            else:
-                snake_position.insert(0, (snake_position[0][0], snake_position[0][1]-block_height))
-                end_of_snake(snake_position.pop(-1))
-        if direction == "DOWN":
-            for pos in snake_position:
-                if (snake_position[0][0], snake_position[0][1]+block_height) == pos:
-                    message()
-                    exit()
-            if (snake_position[0][0], snake_position[0][1]+block_height) == snack_position:
-                snake_position.insert(0, snack_position)
-                display_snack()
-                continue
-            else:
-                snake_position.insert(0, (snake_position[0][0], snake_position[0][1]+block_height))
-                end_of_snake(snake_position.pop(-1))
-        if direction == "RIGHT":
-            for pos in snake_position:
-                if (snake_position[0][0]+block_width, snake_position[0][1]) == pos:
-                    message()
-                    exit()
-            if (snake_position[0][0]+block_width, snake_position[0][1]) == snack_position:
-                snake_position.insert(0, snack_position)
-                display_snack()
-                continue
-            else:
-                snake_position.insert(0, (snake_position[0][0]+block_width, snake_position[0][1]))
-                end_of_snake(snake_position.pop(-1))
-        if direction == "LEFT":
-            for pos in snake_position:
-                if (snake_position[0][0]-block_width, snake_position[0][1]) == pos:
-                    message()
-                    exit()
-            if (snake_position[0][0]-block_width, snake_position[0][1]) == snack_position:
-                snake_position.insert(0, snack_position)
-                display_snack()
-                continue
-            else:
-                snake_position.insert(0, (snake_position[0][0]-block_width, snake_position[0][1]))
-                end_of_snake(snake_position.pop(-1))
-        if snake_position[0][0] < 0:
-            snake_position[0] =(snake_position[0][0]+width,snake_position[0][1])
-        if snake_position[0][1] < 0:
-            snake_position[0] =(snake_position[0][0],snake_position[0][1]+height)
-        if snake_position[0][0] >= 600:
-            snake_position[0] =(snake_position[0][0]-width,snake_position[0][1])
-        if snake_position[0][1] >= 600:
-            snake_position[0] =(snake_position[0][0],snake_position[0][1]-height)
-        for segment in snake_position:
-            display_snake(segment)
 
-    timer+=1
-    clock.tick(FPS)
-    pygame.display.flip()
+if __name__=="__main__":
+    for i in range(cols):
+        for j in range(rows):
+            positions.append((i*block_width, j*block_height))
+
+    pygame.init()
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("Snake")
+    screen = pygame.display.set_mode((height, width))
+    grid = Grid(height, width, cols, rows)
+    grid.draw_grid()
+    snake_position.append(random.choice(positions))
+    display_snake(snake_position[0])
+    display_snack()
+    choice = direction
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    if direction != "DOWN":
+                        choice = "UP"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    if direction != "UP":
+                        choice = "DOWN"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    if direction != "LEFT":
+                        choice = "RIGHT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    if direction != "RIGHT":
+                        choice = "LEFT"
+        if timer%20 == 0:
+            direction = choice
+            timer = 0
+            if direction == "UP":
+                for pos in snake_position:
+                    if (snake_position[0][0], snake_position[0][1]-block_height) == pos:
+                        message()
+                        exit()
+                if (snake_position[0][0], snake_position[0][1]-block_height) == snack_position:
+                    snake_position.insert(0, snack_position)
+                    display_snack()
+                    continue
+                else:
+                    snake_position.insert(0, (snake_position[0][0], snake_position[0][1]-block_height))
+                    end_of_snake(snake_position.pop(-1))
+            if direction == "DOWN":
+                for pos in snake_position:
+                    if (snake_position[0][0], snake_position[0][1]+block_height) == pos:
+                        message()
+                        exit()
+                if (snake_position[0][0], snake_position[0][1]+block_height) == snack_position:
+                    snake_position.insert(0, snack_position)
+                    display_snack()
+                    continue
+                else:
+                    snake_position.insert(0, (snake_position[0][0], snake_position[0][1]+block_height))
+                    end_of_snake(snake_position.pop(-1))
+            if direction == "RIGHT":
+                for pos in snake_position:
+                    if (snake_position[0][0]+block_width, snake_position[0][1]) == pos:
+                        message()
+                        exit()
+                if (snake_position[0][0]+block_width, snake_position[0][1]) == snack_position:
+                    snake_position.insert(0, snack_position)
+                    display_snack()
+                    continue
+                else:
+                    snake_position.insert(0, (snake_position[0][0]+block_width, snake_position[0][1]))
+                    end_of_snake(snake_position.pop(-1))
+            if direction == "LEFT":
+                for pos in snake_position:
+                    if (snake_position[0][0]-block_width, snake_position[0][1]) == pos:
+                        message()
+                        exit()
+                if (snake_position[0][0]-block_width, snake_position[0][1]) == snack_position:
+                    snake_position.insert(0, snack_position)
+                    display_snack()
+                    continue
+                else:
+                    snake_position.insert(0, (snake_position[0][0]-block_width, snake_position[0][1]))
+                    end_of_snake(snake_position.pop(-1))
+            if snake_position[0][0] < 0:
+                snake_position[0] =(snake_position[0][0]+width,snake_position[0][1])
+            if snake_position[0][1] < 0:
+                snake_position[0] =(snake_position[0][0],snake_position[0][1]+height)
+            if snake_position[0][0] >= 600:
+                snake_position[0] =(snake_position[0][0]-width,snake_position[0][1])
+            if snake_position[0][1] >= 600:
+                snake_position[0] =(snake_position[0][0],snake_position[0][1]-height)
+            for segment in snake_position:
+                display_snake(segment)
+
+        timer+=1
+        clock.tick(FPS)
+        pygame.display.flip()
