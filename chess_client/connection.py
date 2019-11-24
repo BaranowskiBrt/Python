@@ -1,5 +1,10 @@
 # Author: Bartłomiej Baranowski
-# Client side connection establishment for chess game
+# Client side connection establishment for chess game.
+
+# Convention of message between clients is: "yd, xd, yf, yd",
+# where xd and yd are coordinates of the destination, xf and yf of selected figure.
+# Coordinates are modified by the receiving side, Taking into account the
+# differences in field numbers (other side of chessboard).
 
 import pygame
 import tkinter
@@ -25,17 +30,12 @@ def opponent_matching(s, grid):
     """Set color returned from server."""
     try:
         settings.your_color = s.recv(1024).decode("utf-8")
-        print("Color sent")
     except (ConnectionAbortedError, ConnectionResetError):
         if settings.done is not True:
-            # root = tkinter.Tk()
-            # root.withdraw()
-            # messagebox.showinfo("Error", "Connection aborted")
             settings.done = True
 
     if settings.your_color == "white":
         settings.your_turn = True
-        print("I'm white")
     elif settings.your_color == "black":
         grid.height_start = 39
         grid.width_start = 36
@@ -45,32 +45,22 @@ def opponent_matching(s, grid):
     pygame.display.update()
 
 
-def connect(ip):
+def connect():
     """"Make socket connection with server"""
     port = 1105
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((ip, port))
+    s.connect((settings.ip, port))
     return s
 
 
 def opponent_wait(grid, s):
     """Wait for opponent to send his move(threaded)"""
-    print("wait")
     try:
         move = s.recv(1024).decode("utf-8")
-        print("Received")
+        print(move)
         grid.move_opponent(move, s)
     except (ConnectionAbortedError, ConnectionResetError):
         if settings.done is not True:
-            # print("Connection abolished here")
-            # root = tkinter.Tk()
-            # root.withdraw()
-            # messagebox.showinfo("Error", "Connection abolished")
-            # print("Closing connection")
             settings.done = True
     if settings.your_color == "":
-        # root = tkinter.Tk()
-        # root.withdraw()
-        # messagebox.showinfo("Error", "Connection aborted")
         settings.done = True
-    print("wait stop")

@@ -128,7 +128,6 @@ class Grid:
             # Selected the figure, move, then check for check
             if figure_type.endswith("pawn"):
                 moves = self.pawn_move() + self.pawn_hit()
-                print(moves)
                 for move in moves:
                     if field.x == move.x and field.y == move.y:
                         if not self.move(field, s):
@@ -198,7 +197,6 @@ class Grid:
                         self.selected = field
                         moves = self.diagonal_move() + self.linear_move()
                         for move in moves:
-                            print(move.x, self.opponent_king.x, move.y, self.opponent_king.y)
                             if move.x == self.opponent_king.x and move.y == self.opponent_king.y:
                                 root = tkinter.Tk()
                                 root.withdraw()
@@ -294,9 +292,7 @@ class Grid:
         # Short castling
         if figure is not None and figure.figure_type is not None and figure.figure_type.endswith("king") \
                 and figure.x == 3 and figure.y == 0 and field.x == 1 and field.y == 0:
-            print(self.position[0][0].figure_type)
             self.position[2][0] = Figure(self.position[0][0].figure_type, 2, 0)
-            print(self.position[2][0].figure_type)
             self.position[0][0] = Figure(None, 0, 0)
 
         # Move opponent
@@ -533,9 +529,6 @@ class Grid:
 
 def main():
 
-    # Set IP of the server here
-    # ip = "192.168.1.3"
-    ip = "10.129.242.209"
     settings.done = False
     height_start = 45
     width_start = 42
@@ -558,7 +551,7 @@ def main():
     grid.start()
     grid.blit_images()
 
-    s = connect(ip)
+    s = connect()
     waiting_screen(screen)
     threading.Thread(target=opponent_matching, args=(s, grid)).start()
     while not settings.done:
@@ -575,7 +568,6 @@ def main():
                         grid.selected = None
                         grid.select(x, y)
         clock.tick(10)
-    print("Done")
     s.close()
 
 

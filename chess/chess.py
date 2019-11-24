@@ -1,7 +1,7 @@
 # Author: Bartłomiej Baranowski
-# Server side of chess game
+# Server side of the chess game
 # Allows for parallel matches
-# Router and firewall have to be adjusted
+# Router and firewall have to be adjusted for non-local connections
 
 
 import socket

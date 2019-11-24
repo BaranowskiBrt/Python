@@ -5,3 +5,4 @@ screen_width = 800
 your_turn = False
 last_move = None
 done = False
+ip = "127.0.0.1"
