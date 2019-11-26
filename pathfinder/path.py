@@ -51,9 +51,13 @@ class Grid:
         pygame.draw.rect(self.screen, settings.grey, pygame.Rect(self.block_width*x+1,
         self.block_height*y+1, self.block_width-1, self.block_height-1))
 
-    def evaluate(self, x, y, distance):
-        open.append(Block(x, y, self.grid[x][y].is_obstacle(), distance,abs(self.end[0]-x)+abs(self.end[1]-y)+distance))
-        pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(12 * x, 12 * y, 12, 12))
+    def evaluate(self, previous, neighbour, distance):
+        x = neighbour[0]
+        y = neighbour[1]
+        open.append(Block(x, y, self.grid[x][y].is_obstacle(), distance,abs(self.end[0]-x)+abs(self.end[1]-y)+distance, previous))
+        self.grid[x][y].previous = previous
+        if settings.steps_on:
+            pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(12 * x, 12 * y, 12, 12))
 
     def check_obstacle(self, pos):
         return self.grid[pos[0]][pos[1]].is_obstacle()
@@ -62,14 +66,19 @@ class Grid:
     def get_block(self, pos):
         return self.grid[pos[0]][pos[1]]
 
+    def set_previous(self, pos, prev):
+        self.grid[pos[0]][pos[1]].previous = prev
+
+
 
 class Block:
-    def __init__(self, col, row, obstacle=False, start_distance=-1, rating=-1):
+    def __init__(self, col, row, obstacle=False, start_distance=-1, rating=-1, previous=(-1, -1)):
         self.row = row
         self.col = col
         self.obstacle = obstacle
         self.rating = rating
         self.distance = start_distance
+        self.previous = previous
     def erase_obstacle(self):
         self.obstacle = False
     def make_obstacle(self):
@@ -135,7 +144,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     calculate = True
                     current = grid.get_block(start)
-                    grid.evaluate(start[0], start[1], 0)
+                    grid.evaluate((-1, -1), start, 0)
                     closed.append(current)
 
             if event.type ==pygame.MOUSEBUTTONDOWN and calculate == False:
@@ -159,7 +168,7 @@ def main():
 
             for neighbour in find_neighbours(grid, current.col, current.row):
                 if  neighbour not in open:
-                    grid.evaluate(neighbour[0], neighbour[1], current.distance+1)
+                    grid.evaluate((current.col, current.row), neighbour, current.distance+1)
             if len(open) == 0:
                 not_found()
                 sys.exit()
@@ -171,17 +180,22 @@ def main():
                     lowest_block = option
             open.remove(lowest_block)
             closed.append(lowest_block)
-            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(12 * lowest_block.col, 12 * lowest_block.row, 12, 12))
+            if settings.steps_on:
+                pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(12 * lowest_block.col, 12 * lowest_block.row, 12, 12))
             current = lowest_block
             if lowest_block.col == end[0] and lowest_block.row == end[1]:
+                while True:
+                    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(12 * current.col, 12 * current.row, 12, 12))
+                    current = grid.get_block(current.previous)
+                    if current.previous == start or current.previous == (-1, -1):
+                        break
+                pygame.display.flip()
                 distance_message(lowest_block.distance+1)
-                done = True
+                calculate = False
 
         pygame.display.flip()
-        if calculate == True and settings.steps_on == True:
-            clock.tick(30)
-        else:
-            clock.tick(500)
+        if calculate == True:
+            clock.tick(1000)
 
 if __name__ == "__main__":
     main()

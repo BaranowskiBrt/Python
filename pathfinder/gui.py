@@ -21,8 +21,6 @@ def start_screen():
     tk.Label(master, text="Input coordinates from 0 to 49", font="Courier").grid(row=0, column=1, sticky=tk.N)
     tk.Label(master, text="Start point").grid(row=1)
     tk.Label(master, text="Destination point").grid(row=2)
-
-    print(start)
     startx = tk.Entry(master)
     starty = tk.Entry(master)
     endx = tk.Entry(master)
