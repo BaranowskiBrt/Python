@@ -9,6 +9,6 @@ grey = (169, 169, 169)
 erase = False
 mouse_pressed = False
 steps_on = False
-calculate = False
+
 i = width//cols
 j = height//rows
